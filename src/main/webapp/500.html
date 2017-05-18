@@ -1,0 +1,1712 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>工控在线异常监测平台</title>
+   <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+   <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+   <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+
+<style type="text/css">
+	*{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+	.top{
+		width: 100%;
+		height: 135px;
+		background: #eee;
+	}
+	.top_1, .top_2, .top_3, .top_4{
+		width: 25%;
+		display:inline;
+		height: 100%;
+		border: 0px solid #fb5024;
+		margin-left:-2px;
+		float:left;
+	}
+	.container .left{
+		float: left;
+		width: 25%;
+		background:pink;
+	}
+	.container .left .con_1, .con_2, .con_3{
+		height: 210px;
+		border-bottom: 1px solid #fb5024;
+	}
+	.container .center{
+		width: 50%;
+		float: left;
+	}
+	.container .center .con_4{
+		height:420px;
+		border-bottom: 1px solid #fb5024;
+	}
+	.container .center .con_5{
+		height:210px;
+		border-bottom: 1px solid #fb5024;
+	}
+	.container .right{
+		width: 25%;
+		float: left;
+		background: pink;
+	}
+	.container .right .con_6{
+		height:315px;
+		border-bottom: 1px solid #fb5024;
+	}
+/* 	.container .right .con_7{
+		height:200px;
+		border-bottom: 1px solid #fb5024;
+	} */
+	.container .right .con_8{
+		height:315px;
+		border-bottom: 1px solid #fb5024;
+	}
+	.clear{
+		clear: both;
+	}
+</style>
+</head>
+
+<body>
+	<div class="index">
+		<div class="top">
+				<div id="top_1" class="top_1"></div> 
+				<div id="top_2" class="top_2">第二个盒子</div> 
+				<div id="top_3" class="top_3">第三个盒子</div> 
+				<div id="top_4" class="top_4">第四个盒子</div> 
+              <div class="clear"></div>
+		</div>
+		<div class="container">
+			<div class="left">
+				<div id="left_top" class="con_1">
+					
+				</div>
+				<div id="left_center" class="con_2">
+					
+				</div>
+				<div id="left_bottom" class="con_3">
+					
+				</div>
+				
+			</div>
+			<div class="center">
+				<div id="center_top" class="con_4">
+					
+				</div>
+				<div id="center_bottom" class="con_5">
+					
+				</div>
+				
+			</div>
+			<div class="right">
+				<div id="right_top" class="con_6">
+					
+				</div>
+<!-- 				<div class="con_7">
+					
+				</div> -->
+               <div id="right_bottom" class="con_8">
+					
+				</div>
+				
+			</div>
+			<div class="clear">
+				
+				
+			</div>
+		</div>
+		
+	</div>
+</body>
+<script type="text/javascript">
+var domestic = echarts.init(document.getElementById("center_top"));
+option = null;
+var geoCoordMap = {
+    "海门":[121.15,31.89],
+    "鄂尔多斯":[109.781327,39.608266],
+    "招远":[120.38,37.35],
+    "舟山":[122.207216,29.985295],
+    "齐齐哈尔":[123.97,47.33],
+    "盐城":[120.13,33.38],
+    "赤峰":[118.87,42.28],
+    "青岛":[120.33,36.07],
+    "乳山":[121.52,36.89],
+    "金昌":[102.188043,38.520089],
+    "泉州":[118.58,24.93],
+    "莱西":[120.53,36.86],
+    "日照":[119.46,35.42],
+    "胶南":[119.97,35.88],
+    "南通":[121.05,32.08],
+    "拉萨":[91.11,29.97],
+    "云浮":[112.02,22.93],
+    "梅州":[116.1,24.55],
+    "文登":[122.05,37.2],
+    "上海":[121.48,31.22],
+    "攀枝花":[101.718637,26.582347],
+    "威海":[122.1,37.5],
+    "承德":[117.93,40.97],
+    "厦门":[118.1,24.46],
+    "汕尾":[115.375279,22.786211],
+    "潮州":[116.63,23.68],
+    "丹东":[124.37,40.13],
+    "太仓":[121.1,31.45],
+    "曲靖":[103.79,25.51],
+    "烟台":[121.39,37.52],
+    "福州":[119.3,26.08],
+    "瓦房店":[121.979603,39.627114],
+    "即墨":[120.45,36.38],
+    "抚顺":[123.97,41.97],
+    "玉溪":[102.52,24.35],
+    "张家口":[114.87,40.82],
+    "阳泉":[113.57,37.85],
+    "莱州":[119.942327,37.177017],
+    "湖州":[120.1,30.86],
+    "汕头":[116.69,23.39],
+    "昆山":[120.95,31.39],
+    "宁波":[121.56,29.86],
+    "湛江":[110.359377,21.270708],
+    "揭阳":[116.35,23.55],
+    "荣成":[122.41,37.16],
+    "连云港":[119.16,34.59],
+    "葫芦岛":[120.836932,40.711052],
+    "常熟":[120.74,31.64],
+    "东莞":[113.75,23.04],
+    "河源":[114.68,23.73],
+    "淮安":[119.15,33.5],
+    "泰州":[119.9,32.49],
+    "南宁":[108.33,22.84],
+    "营口":[122.18,40.65],
+    "惠州":[114.4,23.09],
+    "江阴":[120.26,31.91],
+    "蓬莱":[120.75,37.8],
+    "韶关":[113.62,24.84],
+    "嘉峪关":[98.289152,39.77313],
+    "广州":[113.23,23.16],
+    "延安":[109.47,36.6],
+    "太原":[112.53,37.87],
+    "清远":[113.01,23.7],
+    "中山":[113.38,22.52],
+    "昆明":[102.73,25.04],
+    "寿光":[118.73,36.86],
+    "盘锦":[122.070714,41.119997],
+    "长治":[113.08,36.18],
+    "深圳":[114.07,22.62],
+    "珠海":[113.52,22.3],
+    "宿迁":[118.3,33.96],
+    "咸阳":[108.72,34.36],
+    "铜川":[109.11,35.09],
+    "平度":[119.97,36.77],
+    "佛山":[113.11,23.05],
+    "海口":[110.35,20.02],
+    "江门":[113.06,22.61],
+    "章丘":[117.53,36.72],
+    "肇庆":[112.44,23.05],
+    "大连":[121.62,38.92],
+    "临汾":[111.5,36.08],
+    "吴江":[120.63,31.16],
+    "石嘴山":[106.39,39.04],
+    "沈阳":[123.38,41.8],
+    "苏州":[120.62,31.32],
+    "茂名":[110.88,21.68],
+    "嘉兴":[120.76,30.77],
+    "长春":[125.35,43.88],
+    "胶州":[120.03336,36.264622],
+    "银川":[106.27,38.47],
+    "张家港":[120.555821,31.875428],
+    "三门峡":[111.19,34.76],
+    "锦州":[121.15,41.13],
+    "南昌":[115.89,28.68],
+    "柳州":[109.4,24.33],
+    "三亚":[109.511909,18.252847],
+    "自贡":[104.778442,29.33903],
+    "吉林":[126.57,43.87],
+    "阳江":[111.95,21.85],
+    "泸州":[105.39,28.91],
+    "西宁":[101.74,36.56],
+    "宜宾":[104.56,29.77],
+    "呼和浩特":[111.65,40.82],
+    "成都":[104.06,30.67],
+    "大同":[113.3,40.12],
+    "镇江":[119.44,32.2],
+    "桂林":[110.28,25.29],
+    "张家界":[110.479191,29.117096],
+    "宜兴":[119.82,31.36],
+    "北海":[109.12,21.49],
+    "西安":[108.95,34.27],
+    "金坛":[119.56,31.74],
+    "东营":[118.49,37.46],
+    "牡丹江":[129.58,44.6],
+    "遵义":[106.9,27.7],
+    "绍兴":[120.58,30.01],
+    "扬州":[119.42,32.39],
+    "常州":[119.95,31.79],
+    "潍坊":[119.1,36.62],
+    "重庆":[106.54,29.59],
+    "台州":[121.420757,28.656386],
+    "南京":[118.78,32.04],
+    "滨州":[118.03,37.36],
+    "贵阳":[106.71,26.57],
+    "无锡":[120.29,31.59],
+    "本溪":[123.73,41.3],
+    "克拉玛依":[84.77,45.59],
+    "渭南":[109.5,34.52],
+    "马鞍山":[118.48,31.56],
+    "宝鸡":[107.15,34.38],
+    "焦作":[113.21,35.24],
+    "句容":[119.16,31.95],
+    "北京":[116.46,39.92],
+    "徐州":[117.2,34.26],
+    "衡水":[115.72,37.72],
+    "包头":[110,40.58],
+    "绵阳":[104.73,31.48],
+    "乌鲁木齐":[87.68,43.77],
+    "枣庄":[117.57,34.86],
+    "杭州":[120.19,30.26],
+    "淄博":[118.05,36.78],
+    "鞍山":[122.85,41.12],
+    "溧阳":[119.48,31.43],
+    "库尔勒":[86.06,41.68],
+    "安阳":[114.35,36.1],
+    "开封":[114.35,34.79],
+    "济南":[117,36.65],
+    "德阳":[104.37,31.13],
+    "温州":[120.65,28.01],
+    "九江":[115.97,29.71],
+    "邯郸":[114.47,36.6],
+    "临安":[119.72,30.23],
+    "兰州":[103.73,36.03],
+    "沧州":[116.83,38.33],
+    "临沂":[118.35,35.05],
+    "南充":[106.110698,30.837793],
+    "天津":[117.2,39.13],
+    "富阳":[119.95,30.07],
+    "泰安":[117.13,36.18],
+    "诸暨":[120.23,29.71],
+    "郑州":[113.65,34.76],
+    "哈尔滨":[126.63,45.75],
+    "聊城":[115.97,36.45],
+    "芜湖":[118.38,31.33],
+    "唐山":[118.02,39.63],
+    "平顶山":[113.29,33.75],
+    "邢台":[114.48,37.05],
+    "德州":[116.29,37.45],
+    "济宁":[116.59,35.38],
+    "荆州":[112.239741,30.335165],
+    "宜昌":[111.3,30.7],
+    "义乌":[120.06,29.32],
+    "丽水":[119.92,28.45],
+    "洛阳":[112.44,34.7],
+    "秦皇岛":[119.57,39.95],
+    "株洲":[113.16,27.83],
+    "石家庄":[114.48,38.03],
+    "莱芜":[117.67,36.19],
+    "常德":[111.69,29.05],
+    "保定":[115.48,38.85],
+    "湘潭":[112.91,27.87],
+    "金华":[119.64,29.12],
+    "岳阳":[113.09,29.37],
+    "长沙":[113,28.21],
+    "衢州":[118.88,28.97],
+    "廊坊":[116.7,39.53],
+    "菏泽":[115.480656,35.23375],
+    "合肥":[117.27,31.86],
+    "武汉":[114.31,30.52],
+    "大庆":[125.03,46.58]
+};
+
+var convertData = function (data) {
+    var res = [];
+    for (var i = 0; i < data.length; i++) {
+        var geoCoord = geoCoordMap[data[i].name];
+        if (geoCoord) {
+            res.push({
+                name: data[i].name,
+                value: geoCoord.concat(data[i].value)
+            });
+        }
+    }
+    return res;
+};
+
+option = {
+    backgroundColor: '#404a59',
+    title: {
+        text: '全国工控系统暴露分布图',
+        subtext: 'data from CASIC',
+        sublink: '',
+        x:'center',
+        textStyle: {
+            color: '#fff'
+        }
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: function (params) {
+            return params.name + ' : ' + params.value[2];
+        }
+    },
+/*     legend: {
+        orient: 'vertical',
+        y: 'bottom',
+        x:'right',
+        data:['BUG'],
+        textStyle: {
+            color: '#fff'
+        }
+    }, */
+    visualMap: {
+        min: 0,
+        max: 200,
+        calculable: true,
+        inRange: {
+            color: ['#50a3ba', '#eac736', '#d94e5d']
+        },
+        textStyle: {
+            color: '#fff'
+        }
+    },
+    geo: {
+        map: 'china',
+        label: {
+            emphasis: {
+                show: false
+            }
+        },
+        itemStyle: {
+            normal: {
+                areaColor: '#323c48',
+                borderColor: '#111'
+            },
+            emphasis: {
+                areaColor: '#2a333d'
+            }
+        }
+    },
+    series: [
+        {
+            name: 'BUG',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertData([
+                {name: "海门", value: 9},
+                {name: "鄂尔多斯", value: 12},
+                {name: "招远", value: 12},
+                {name: "舟山", value: 12},
+                {name: "齐齐哈尔", value: 14},
+                {name: "盐城", value: 15},
+                {name: "赤峰", value: 16},
+                {name: "青岛", value: 18},
+                {name: "乳山", value: 18},
+                {name: "金昌", value: 19},
+                {name: "泉州", value: 21},
+                {name: "莱西", value: 21},
+                {name: "日照", value: 21},
+                {name: "胶南", value: 22},
+                {name: "南通", value: 23},
+                {name: "拉萨", value: 24},
+                {name: "云浮", value: 24},
+                {name: "梅州", value: 25},
+                {name: "文登", value: 25},
+                {name: "上海", value: 25},
+                {name: "攀枝花", value: 25},
+                {name: "威海", value: 25},
+                {name: "承德", value: 25},
+                {name: "厦门", value: 26},
+                {name: "汕尾", value: 26},
+                {name: "潮州", value: 26},
+                {name: "丹东", value: 27},
+                {name: "太仓", value: 27},
+                {name: "曲靖", value: 27},
+                {name: "烟台", value: 28},
+                {name: "福州", value: 29},
+                {name: "瓦房店", value: 30},
+                {name: "即墨", value: 30},
+                {name: "抚顺", value: 31},
+                {name: "玉溪", value: 31},
+                {name: "张家口", value: 31},
+                {name: "阳泉", value: 31},
+                {name: "莱州", value: 32},
+                {name: "湖州", value: 32},
+                {name: "汕头", value: 32},
+                {name: "昆山", value: 33},
+                {name: "宁波", value: 33},
+                {name: "湛江", value: 33},
+                {name: "揭阳", value: 34},
+                {name: "荣成", value: 34},
+                {name: "连云港", value: 35},
+                {name: "葫芦岛", value: 35},
+                {name: "常熟", value: 36},
+                {name: "东莞", value: 36},
+                {name: "河源", value: 36},
+                {name: "淮安", value: 36},
+                {name: "泰州", value: 36},
+                {name: "南宁", value: 37},
+                {name: "营口", value: 37},
+                {name: "惠州", value: 37},
+                {name: "江阴", value: 37},
+                {name: "蓬莱", value: 37},
+                {name: "韶关", value: 38},
+                {name: "嘉峪关", value: 38},
+                {name: "广州", value: 38},
+                {name: "延安", value: 38},
+                {name: "太原", value: 39},
+                {name: "清远", value: 39},
+                {name: "中山", value: 39},
+                {name: "昆明", value: 39},
+                {name: "寿光", value: 40},
+                {name: "盘锦", value: 40},
+                {name: "长治", value: 41},
+                {name: "深圳", value: 41},
+                {name: "珠海", value: 42},
+                {name: "宿迁", value: 43},
+                {name: "咸阳", value: 43},
+                {name: "铜川", value: 44},
+                {name: "平度", value: 44},
+                {name: "佛山", value: 44},
+                {name: "海口", value: 44},
+                {name: "江门", value: 45},
+                {name: "章丘", value: 45},
+                {name: "肇庆", value: 46},
+                {name: "大连", value: 47},
+                {name: "临汾", value: 47},
+                {name: "吴江", value: 47},
+                {name: "石嘴山", value: 49},
+                {name: "沈阳", value: 50},
+                {name: "苏州", value: 50},
+                {name: "茂名", value: 50},
+                {name: "嘉兴", value: 51},
+                {name: "长春", value: 51},
+                {name: "胶州", value: 52},
+                {name: "银川", value: 52},
+                {name: "张家港", value: 52},
+                {name: "三门峡", value: 53},
+                {name: "锦州", value: 54},
+                {name: "南昌", value: 54},
+                {name: "柳州", value: 54},
+                {name: "三亚", value: 54},
+                {name: "自贡", value: 56},
+                {name: "吉林", value: 56},
+                {name: "阳江", value: 57},
+                {name: "泸州", value: 57},
+                {name: "西宁", value: 57},
+                {name: "宜宾", value: 58},
+                {name: "呼和浩特", value: 58},
+                {name: "成都", value: 58},
+                {name: "大同", value: 58},
+                {name: "镇江", value: 59},
+                {name: "桂林", value: 59},
+                {name: "张家界", value: 59},
+                {name: "宜兴", value: 59},
+                {name: "北海", value: 60},
+                {name: "西安", value: 61},
+                {name: "金坛", value: 62},
+                {name: "东营", value: 62},
+                {name: "牡丹江", value: 63},
+                {name: "遵义", value: 63},
+                {name: "绍兴", value: 63},
+                {name: "扬州", value: 64},
+                {name: "常州", value: 64},
+                {name: "潍坊", value: 65},
+                {name: "重庆", value: 66},
+                {name: "台州", value: 67},
+                {name: "南京", value: 67},
+                {name: "滨州", value: 70},
+                {name: "贵阳", value: 71},
+                {name: "无锡", value: 71},
+                {name: "本溪", value: 71},
+                {name: "克拉玛依", value: 72},
+                {name: "渭南", value: 72},
+                {name: "马鞍山", value: 72},
+                {name: "宝鸡", value: 72},
+                {name: "焦作", value: 75},
+                {name: "句容", value: 75},
+                {name: "北京", value: 79},
+                {name: "徐州", value: 79},
+                {name: "衡水", value: 80},
+                {name: "包头", value: 80},
+                {name: "绵阳", value: 80},
+                {name: "乌鲁木齐", value: 84},
+                {name: "枣庄", value: 84},
+                {name: "杭州", value: 84},
+                {name: "淄博", value: 85},
+                {name: "鞍山", value: 86},
+                {name: "溧阳", value: 86},
+                {name: "库尔勒", value: 86},
+                {name: "安阳", value: 90},
+                {name: "开封", value: 90},
+                {name: "济南", value: 92},
+                {name: "德阳", value: 93},
+                {name: "温州", value: 95},
+                {name: "九江", value: 96},
+                {name: "邯郸", value: 98},
+                {name: "临安", value: 99},
+                {name: "兰州", value: 99},
+                {name: "沧州", value: 100},
+                {name: "临沂", value: 103},
+                {name: "南充", value: 104},
+                {name: "天津", value: 105},
+                {name: "富阳", value: 106},
+                {name: "泰安", value: 112},
+                {name: "诸暨", value: 112},
+                {name: "郑州", value: 113},
+                {name: "哈尔滨", value: 114},
+                {name: "聊城", value: 116},
+                {name: "芜湖", value: 117},
+                {name: "唐山", value: 119},
+                {name: "平顶山", value: 119},
+                {name: "邢台", value: 119},
+                {name: "德州", value: 120},
+                {name: "济宁", value: 120},
+                {name: "荆州", value: 127},
+                {name: "宜昌", value: 130},
+                {name: "义乌", value: 132},
+                {name: "丽水", value: 133},
+                {name: "洛阳", value: 134},
+                {name: "秦皇岛", value: 136},
+                {name: "株洲", value: 143},
+                {name: "石家庄", value: 147},
+                {name: "莱芜", value: 148},
+                {name: "常德", value: 152},
+                {name: "保定", value: 153},
+                {name: "湘潭", value: 154},
+                {name: "金华", value: 157},
+                {name: "岳阳", value: 169},
+                {name: "长沙", value: 175},
+                {name: "衢州", value: 177},
+                {name: "廊坊", value: 193},
+                {name: "菏泽", value: 194},
+                {name: "合肥", value: 229},
+                {name: "武汉", value: 273},
+                {name: "大庆", value: 279}
+            ]),
+            symbolSize: 12,
+            label: {
+                normal: {
+                    show: false
+                },
+                emphasis: {
+                    show: false
+                }
+            },
+            itemStyle: {
+                emphasis: {
+                    borderColor: '#fff',
+                    borderWidth: 1
+                }
+            }
+        }
+    ]
+};
+if (option && typeof option === "object") {
+	domestic.setOption(option, true);
+}
+
+var pieChart = echarts.init(document.getElementById('right_top'));
+var option1 = {
+		backgroundColor: '#404a59',
+	    title : {
+	        text: '协议类型',
+	        subtext: '',
+	        x:'center',
+            textStyle:{
+                fontSize: 16,
+                color: '#fff'
+            } 
+	    },
+/* 	    tooltip : {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	    },
+ *//* 	    legend: {
+	        orient: 'vertical',
+	        left: 'left',
+	        data: ['S7','modbus','fox','IEC60870-5-104','EtherNet/IP','DNP3','OMRON FINS','BACnet']
+	    }, */
+	    series : [
+	        {
+	            name: '访问来源',
+	            type: 'pie',
+	            radius : '55%',
+	            center: ['50%', '60%'],
+	            data:[
+	                {value:4, name:'OMRON FINS'},
+	                {value:6, name:'DNP3'},
+	                {value:1, name:'BACnet'},
+	                {value:75, name:'S7'},
+	                {value:67, name:'modbus'},
+	                {value:16, name:'fox'},
+	                {value:13, name:'IEC60870-5-104'},
+	                {value:10, name:'EtherNet/IP'}
+	            ],
+	            itemStyle: {
+	                emphasis: {
+	                    shadowBlur: 10,
+	                    shadowOffsetX: 0,
+	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	                }
+	            }
+	        }
+	    ]
+	};
+pieChart.setOption(option1);
+
+var barChart = echarts.init(document.getElementById('right_bottom'));
+var option2 = {
+		backgroundColor: '#404a59',
+	    title : {
+	        text: '工控系统暴露条状统计Top10',
+	        subtext: '',
+	        x:'center',
+            textStyle:{
+                fontSize: 16,
+                color: '#fff'
+            } 
+	    },
+	    tooltip : {
+	        trigger: 'axis',
+	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+	            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+	        }
+	    },
+	    grid: {
+	        left: '3%',
+	        right: '4%',
+	        bottom: '3%',
+	        top: 40,
+	        containLabel: true
+	    },
+	    xAxis:  [{
+	        type: 'value',
+	        axisLabel:{
+	            textStyle:{
+	                color: '#fff'
+	            }
+	        }
+	    }],
+	    yAxis: {
+	        type: 'category',
+	        axisLabel:{
+	            textStyle:{
+	                color: '#fff'
+	            }
+	        },
+	        data: ['北京市','天津市','上海市','浙江省','安徽省','福建省','江西省','湖南省','山东省','河南省' ,'湖北省','新疆省','河北省','黑龙江省','吉林省']
+	    },
+	    series: [
+	        {
+	            name: '常规服务',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [20, 32, 31, 34, 30, 33, 32, 9, 23, 10, 3, 7, 21, 28, 50]
+	        },
+	        {
+	            name: '工控服务',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [12, 12, 10, 14, 9, 30, 21, 90, 40, 20, 9, 23, 10, 3, 7]
+	        }
+	    ]
+	};
+barChart.setOption(option2);
+
+var hours = ['2001', '2002', '2003', '2004', '2005', '2006', '2007',
+             '2008', '2009', '2010','2011','2012',
+             '2013', '2014', '2015', '2016','',];
+var days = ['北京', '上海', '天津','广州', '重庆', '成都', '杭州'];
+var data = [
+     [0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,1],[0,5,1],[0,6,1],[0,7,0],[0,8,2],[0,9,3],[0,10,2],[0,11,3],[0,12,5],[0,13,19],[0,14,6],[0,15,11],[0,16,0],
+     [1,0,0],[1,1,1],[1,2,0],[1,3,0],[1,4,1],[1,5,0],[1,6,0],[1,7,0],[1,8,3],[1,9,1],[1,10,1],[1,11,4],[1,12,2],[1,13,5],[1,14,6],[1,15,6],[1,16,0],
+     [2,0,0],[2,1,1],[2,2,0],[2,3,2],[2,4,0],[2,5,1],[2,6,1],[2,7,4],[2,8,1],[2,9,3],[2,10,10],[2,11,6],[2,12,1],[2,13,3],[2,14,5],[2,15,1],[2,16,0],
+     [3,0,0],[3,1,0],[3,2,0],[3,3,3],[3,4,3],[3,5,4],[3,6,3],[3,7,3],[3,8,3],[3,9,0],[3,10,1],[3,11,0],[3,12,2],[3,13,1],[3,14,0],[3,15,0],[3,16,0],
+     [4,0,0],[4,1,0],[4,2,0],[4,3,4],[4,4,3],[4,5,6],[4,6,2],[4,7,2],[4,8,5],[4,9,0],[4,10,0],[4,11,1],[4,12,1],[4,13,0],[4,14,0],[4,15,0],[4,16,0],
+     [5,0,0],[5,1,0],[5,2,0],[5,3,2],[5,4,0],[5,5,1],[5,6,2],[5,7,3],[5,8,3],[5,9,1],[5,10,2],[5,11,0],[5,12,0],[5,13,1],[5,14,1],[5,15,0],[5,16,0],
+     [6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[6,5,0],[6,6,0],[6,7,7],[6,8,4],[6,9,4],[6,10,5],[6,11,1],[6,12,1],[6,13,2],[6,14,2],[6,15,3],[6,16,0],
+     ];
+     data = data.map(function (item) {
+         return [item[1], item[0], item[2]];
+     });
+
+var option3 = {
+		 backgroundColor: '#404a59',
+	    title : {
+	        text: '待定',
+	        subtext: '',
+	        x:'center',
+	           textStyle:{
+	               fontSize: 16,
+	               color: '#fff'
+	           } 
+	    },
+         tooltip: {
+             position: 'top',
+             formatter: function (params) {
+                 return '在' + hours[params.value[0]] + '年期间，' + days[params.value[1]] + '共发生了'+params.value[2] + '次暴露';
+             }
+         },
+         grid: {
+             left: 2,
+             bottom: 5,
+             right: 10,
+             top:20,
+             containLabel: true
+         },
+         xAxis: {
+             type: 'category',
+             data: hours,
+             boundaryGap: false,
+             splitLine: {
+                 show: true,
+                 lineStyle: {
+                     color: '#999',
+                     type: 'dashed'
+                 }
+             },
+             axisLine: {
+                 show: false
+             },
+             axisLabel:{
+                 textStyle:{
+                     color: '#fff'
+                 }
+             }
+         },
+         yAxis: {
+             type: 'category',
+             data: days,
+             axisLine: {
+                 show: false
+             },
+             axisLabel:{
+                 textStyle:{
+                     color: '#fff'
+                 }
+             }
+         },
+         series: [{
+             name: '数量',
+             type: 'scatter',
+             symbolSize: function (val) {
+                 return val[2] * 2.2;
+             },
+             data: data,
+             animationDelay: function (idx) {
+                 return idx * 5;
+             }
+         }]
+     };
+var popChart = echarts.init(document.getElementById('center_bottom'));
+popChart.setOption(option3);
+
+var option4 = {
+		backgroundColor: '#404a59',
+	    color: ['#c33632', '#2e4354', '#d58364', '#62a1a9', '#91c9b0', '#749f83', '#cb8723', '#bda49c', '#6f7174', '#546470', '#c6ced3', '#c43430', '#2e4455', '#60a2aa', '#d68364'],
+	    title : {
+	        text: '泄露来源',
+	        subtext: '',
+	        x:'center',
+	           textStyle:{
+	               fontSize: 16,
+	               color: '#fff'
+	           } 
+	    },
+	    tooltip: {
+	        trigger: 'item',
+	        formatter: "{a} <br/>{b}: {c} ({d}%)"
+	    },
+	    series: [{
+	        name: '访问来源',
+	        type: 'pie',
+	        selectedMode: 'single',
+	        radius: [0, '30%'],
+
+	        label: {
+	            normal: {
+	                position: 'inner'
+	            }
+	        },
+	        label: {
+	            normal: {
+	                textStyle: {
+	                    fontSize: 12,
+	                    color: '#fff'
+	                }
+	            }
+	        },
+	        labelLine: {
+	            normal: {
+	                show: false
+	            }
+	        },
+	        data: [
+	            {
+	                value: 67,
+	                name: '网关'
+	            }, {
+	                value: 48,
+	                name: '网段'
+	            }, {
+	                value: 48,
+	                name: '终端'
+	            }, {
+	                value: 67,
+	                name: '虚拟化'
+	            }, {
+	                value: 48,
+	                name: '防火墙'
+	            }, {
+	                value: 48,
+	                name: 'Web'
+	            }
+	        ]
+	    }, {
+	        name: '访问来源',
+	        type: 'pie',
+	        radius: ['40%', '55%'],
+	        data: [
+	            {
+	                value: 30,
+	                name: 'DeepEdge'
+	            }, {
+	                value: 34,
+	                name: 'TDA'
+	            }, {
+	                value: 30,
+	                name: 'OfficeScan'
+	            }, {
+	                value: 34,
+	                name: 'DeepSecurity'
+	            }, {
+	                value: 30,
+	                name: 'Fortigate'
+	            }, {
+	                value: 34,
+	                name: 'Power'
+	            }, {
+	                value: 30,
+	                name: 'Netscreen'
+	            }, {
+	                value: 34,
+	                name: 'H3C'
+	            }, {
+	                value: 45,
+	                name: 'P1600A'
+	            }
+	        ]
+	    }]
+	};
+var duplicatePie = echarts.init(document.getElementById('left_bottom'));
+duplicatePie.setOption(option4);
+
+var xAxisData = [];
+var data = [];
+for (var i = 9; i < 16; i++) {
+    xAxisData.push('5月' + i + '日');
+    data.push(Math.round(Math.random() * 500) + 200);
+}
+var option5 = {
+	backgroundColor: '#404a59',
+    title : {
+        text: '待定',
+        subtext: '',
+        x:'center',
+        textStyle:{
+            fontSize: 16,
+            color: '#fff'
+        } 
+    },
+    xAxis: [{
+        data: xAxisData,
+        axisLabel: {
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        splitLine: {
+            show: false
+        }
+    }, {
+        // 辅助 x 轴
+        show: false,
+        data: xAxisData  
+    }],
+    yAxis: {
+        max: 1000,
+        axisLine: {
+            show: false
+        },
+        axisLabel:{
+            textStyle:{
+                color: '#fff'
+            }
+        }
+    },
+    series: [{
+        // 辅助系列
+        type: 'bar',
+        silent: true,
+        xAxisIndex: 1,
+        itemStyle: {
+            normal: {
+                barBorderRadius: 10,
+                color: '#ddd'      
+            }
+        },
+        barWidth: 10,
+        data: data.map(function (val) {
+            return 1000;
+        })
+    }, {
+        type: 'bar',
+        data: data,
+        barWidth: 10,
+        itemStyle: {
+            normal: {
+                barBorderRadius: 10,
+                color: '#03a9f4',
+                shadowColor: 'rgba(0, 0, 0, 0.4)',
+                shadowBlur: 20
+            }
+        }
+    }]
+};
+var columnChart = echarts.init(document.getElementById('left_center'));
+columnChart.setOption(option5);
+
+var option6 = {
+		 backgroundColor: '#404a59',
+	     color: ['#00ffff', '#00ffa2', '#f0e750'],
+	     tooltip: {
+	         trigger: 'axis',
+	         textStyle: {
+	             fontSize: 15,
+	             color: "#fff",
+	         }
+	     },
+	    title : {
+	        text: '威胁级别',
+	        subtext: '',
+	        x:'top',
+	           textStyle:{
+	               fontSize: 16,
+	               color: '#fff'
+	           } 
+	    },
+	     legend: {
+	         orient: 'vertical',
+	         right: "4%",
+	         itemGap: 20,
+	         //itemWidth:16,
+	         //itemHeight:12,
+	         data: ['高危', '中危', '低危'],
+	         textStyle: {
+	             color: '#fff',
+	         }
+	     },
+	     grid: {
+	         show: true,
+	         left: 60,
+	         top: 34,
+	         right: 44,
+	         bottom: 42,
+	         borderWidth: 1,
+	         borderColor: 'rgba(170,172,178,0.33)',
+	         backgroundColor: 'rgba(17, 34, 69, 0.24)',
+	     },
+	     calculable: true,
+	     xAxis: [{
+	         type: 'category',
+	         boundaryGap: false,
+	         //在（type: 'category'）中设置data有效
+	         data: ['00:00:00', '03:00:00', '06:00:00', '09:00:00', '12:00:00',
+	             '15:00:00', '18:00:00', '21:00:00', '00:00:00'
+	         ],
+
+	         splitLine: { //坐标轴在 grid 区域中的分隔线；
+	             show: true,
+	             lineStyle: { //分割线颜色，可设单个，也可以设置数组。
+	                 color: 'rgba(170,172,178,0.33)'
+	             }
+	         },
+	         axisLine: { //坐标轴轴线相关设置。就是数学上的x轴
+	             show: true,
+	             lineStyle: {
+	                 color: 'rgba(170,172,178,0.53)'
+	             },
+	         },
+	         axisLabel: {
+	             textStyle: {
+	                 color: 'rgba(255,255,255,0.83)',
+	                 fontSize: 15,
+	             },
+	         },
+	     }],
+	     yAxis: [{
+	         type: 'value',
+	         min: 0,
+	         max: 4000,
+	         splitLine: {
+	             show: true,
+	             lineStyle: {
+	                 color: 'rgba(170,172,178,0.33)'
+	             }
+	         },
+	         axisLine: { //坐标轴轴线相关设置。就是数学上的y轴
+	             show: true,
+	             lineStyle: {
+	                 color: 'rgba(170,172,178,0.53)'
+	             },
+	         },
+	         axisLabel: {
+	             textStyle: {
+	                 color: 'rgba(255,255,255,0.83)',
+	                 fontSize: 12,
+	             },
+	         },
+	         splitArea: {
+	             show: true,
+	             areaStyle: {
+	                 color: ['#112245', 'rgba(34,50,82,0.4)']
+	             }
+	         }
+	     }],
+	     series: [{
+	                 name: '高危',
+	                 type: 'line',
+	                 smooth: true, //是否平滑曲线显示
+	                 lineStyle: { //线条样式 
+	                     normal: {
+	                         width: 1
+	                     }
+	                 },
+	                 areaStyle: { //区域填充样式
+	                     normal: {
+	                         //线性渐变，前4个参数分别是x0,y0,x2,y2(范围0~1);相当于图形包围盒中的百分比。如果最后一个参数是‘true’，则该四个值是绝对像素位置。
+	                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+	                             offset: 0,
+	                             color: 'rgba(0, 255, 255, 0.9)'
+	                         }, {
+	                             offset: 0.7,
+	                             color: 'rgba(0, 255, 255, 0.6)'
+	                         }], false),
+
+	                         shadowColor: 'rgba(0, 0, 0, 0.9)', //阴影颜色
+	                         shadowBlur: 10 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
+	                     }
+	                 },
+	                 itemStyle: { //折现拐点标志的样式
+	                     normal: {
+	                         color: 'rgb(0,255,255)'
+	                     }
+	                 },
+	                 data: [2000, 122, 3121, 54, 60, 2630, 1150, 2442, 1292]
+	             }, {
+	                 name: '中危',
+	                 type: 'line',
+	                 smooth: true,
+	                 lineStyle: {
+	                     normal: {
+	                         width: 1
+	                     }
+	                 },
+	                 areaStyle: {
+	                     normal: {
+	                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+	                             offset: 0,
+	                             color: 'rgba(240, 231, 80, 0.9)'
+	                         }, {
+	                             offset: 0.8,
+	                             color: 'rgba(240, 231, 80, 0.4)'
+	                         }], false),
+	                         shadowColor: 'rgba(0, 0, 0, 0.9)',
+	                         shadowBlur: 10
+	                     }
+	                 },
+	                 itemStyle: {
+	                     normal: {
+	                         color: 'rgb(240,231,80)'
+
+	                     }
+	                 },
+	                 data: [1130, 812, 1134, 2361, 413, 1330, 1301, 594, 1230]
+	             }, {
+	                 name: '低危',
+	                 type: 'line',
+	                 smooth: true,
+	                 lineStyle: {
+	                     normal: {
+	                         width: 1
+	                     }
+	                 },
+	                 itemStyle: {
+	                     normal: {
+	                         color: 'rgb(0,255,162)'
+	                     }
+	                 },
+	                 areaStyle: {
+	                     normal: {
+	                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+	                             offset: 0,
+	                             color: 'rgba(0,255,162, 0.8)'
+	                         }, {
+	                             offset: 0.8,
+	                             color: 'rgba(0,255,162, 0.4)'
+	                         }], false),
+	                         shadowColor: 'rgba(0, 0, 0, 0.9)',
+	                         shadowBlur: 10
+	                     }
+	                 },
+	                 data: [1220, 1132, 1421, 2114, 954, 620, 132, 190, 540]
+	             },
+
+	         ] //series结束
+	 }; // option结束
+	 var areaChart = echarts.init(document.getElementById('left_top'));
+	 areaChart.setOption(option6);
+	 
+	 var xAxisData = [];
+	 var data = [];
+	 var data2 = [];
+	 for (var i = 0; i < 50; i++) {
+	     xAxisData.push(i);
+	     data.push((Math.sin(i / 5) * (i / 5 -10) + i / 6) * 5);
+	     data2.push((Math.sin(i / 5) * (i / 5 + 10) + i / 6) * 3);
+	 }
+
+	 var option7 = {
+	     backgroundColor: '#08263a',
+	     title : {
+	        text: '待定',
+	        subtext: '',
+	        x:'left',
+	           textStyle:{
+	               fontSize: 16,
+	               color: '#fff'
+	           } 
+	     },
+	     xAxis: [{
+	         show: false,
+	         data: xAxisData
+	     }, {
+	         show: false,
+	         data: xAxisData
+	     }
+	     ],
+	     visualMap: {
+	         show: false,
+	         min: 0,
+	         max: 50,
+	         dimension: 0,
+	         inRange: {
+	             color: ['#4a657a', '#308e92', '#b1cfa5', '#f5d69f', '#f5898b', '#ef5055']
+	         }
+	     },
+	     grid:{
+	  		   x:50,
+	  		   y:100,
+	  		   x2:50,
+	  		   y2:100
+	     },
+	     yAxis: {
+	         axisLine: {
+	             show: false
+	         },
+	         axisLabel: {
+	             textStyle: {
+	                 color: '#fff'
+	             }  
+	         },
+	         splitLine: {
+	             show: true,
+	             lineStyle: {
+	                 color: '#08263f'
+	             }
+	         },
+	         axisTick: {
+	             show: false
+	         }
+	     },
+	     series: [{
+	         name: 'back',
+	         type: 'bar',
+	         data: data2,
+	         z: 1,
+	         itemStyle: {
+	             normal: {
+	                 opacity: 0.4,
+	                 barBorderRadius: 5,
+	                 shadowBlur: 3,
+	                 shadowColor: '#111'
+	             }
+	         }
+	     }, {
+	         name: 'Simulate Shadow',
+	         type: 'line',
+	         data: data,
+	         z: 2,
+	         showSymbol: false,
+	         animationDelay: 0,
+	         animationEasing: 'linear',
+	         animationDuration: 1200,
+	         lineStyle: {
+	             normal: {
+	                 color: 'transparent'
+	             }  
+	         },
+	         areaStyle: {
+	             normal: {
+	                 color: '#08263a',
+	                 shadowBlur: 50,
+	                 shadowColor: '#000'
+	             }
+	         }
+	     }, {
+	         name: 'front',
+	         type: 'bar',
+	         data: data,
+	         xAxisIndex: 1,
+	         z: 3,
+	         itemStyle: {
+	             normal: {
+	                 barBorderRadius: 5
+	             }
+	         }
+	     }],
+	     animationEasing: 'elasticOut',
+	     animationEasingUpdate: 'elasticOut',
+	     animationDelay: function (idx) {
+	         return idx * 20;
+	     },
+	     animationDelayUpdate: function (idx) {
+	         return idx * 20;
+	     }
+	 };
+	 var top1Chart = echarts.init(document.getElementById('top_2'));
+	 top1Chart.setOption(option7);
+	 
+	 var option8 = {
+	    backgroundColor: '#08263a',
+     title : {
+	        text: '待定',
+	        subtext: '',
+	        x:'left',
+	           textStyle:{
+	               fontSize: 16,
+	               color: '#fff'
+	           } 
+	     },
+	    grid: {
+	  		   x:50,
+	  		   y:100,
+	  		   x2:50,
+	  		   y2:100
+	    },
+	    legend: {
+	    	 orient: 'horizontal',
+	        data:['sin','cos'],
+	        textStyle: {
+	            color: '#fff'          // 图例文字颜色
+	        }
+	    },
+	    xAxis : [
+	        {
+	            type : 'value',
+	            scale:true,
+	            axisLabel:{
+	                textStyle:{
+	                    color: '#fff'
+	                }
+	            }
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value',
+	            scale:true,
+	            axisLabel:{
+	                textStyle:{
+	                    color: '#fff'
+	                }
+	            }
+	        }
+	    ],
+	    series : [
+	        {
+	            name:'sin',
+	            type:'scatter',
+	            large: true,
+	            symbolSize: 3,
+	            data: (function () {
+	                var d = [];
+	                var len = 10000;
+	                var x = 0;
+	                while (len--) {
+	                    x = (Math.random() * 10).toFixed(3) - 0;
+	                    d.push([
+	                        x,
+	                        //Math.random() * 10
+	                        (Math.sin(x) - x * (len % 2 ? 0.1 : -0.1) * Math.random()).toFixed(3) - 0
+	                    ]);
+	                }
+	                //console.log(d)
+	                return d;
+	            })()
+	        },
+	        {
+	            name:'cos',
+	            type:'scatter',
+	            large: true,
+	            symbolSize: 2,
+	            data: (function () {
+	                var d = [];
+	                var len = 20000;
+	                var x = 0;
+	                while (len--) {
+	                    x = (Math.random() * 10).toFixed(3) - 0;
+	                    d.push([
+	                        x,
+	                        //Math.random() * 10
+	                        (Math.cos(x) - x * (len % 2 ? 0.1 : -0.1) * Math.random()).toFixed(3) - 0
+	                    ]);
+	                }
+	                //console.log(d)
+	                return d;
+	            })()
+	        }
+	    ]
+	};
+	 
+	 var top4Chart = echarts.init(document.getElementById('top_4'));
+	 top4Chart.setOption(option8);
+	 
+	 
+	 var data = [];
+
+	 for (var i = 0; i <= 10; i++) {
+	     var theta = i / 100 * 360;
+	     var r = 5 * (1 + Math.sin(theta / 180 * Math.PI));
+	     data.push([r, theta]);
+	 }
+
+	 var option9 = {
+		backgroundColor: '#08263a',	 
+	    tooltip : {
+	        trigger: 'axis',
+	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+	            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+	        }
+	    },
+	     title : {
+		        text: '待定',
+		        subtext: '',
+		        x:'left',
+		           textStyle:{
+		               fontSize: 16,
+		               color: '#fff'
+		           } 
+		     },
+		     legend: {
+		         data: ['直接访问', '威胁暴露','漏洞利用','已被监视','被动连接'],
+			        textStyle: {
+			            color: '#fff'          // 图例文字颜色
+			        }
+		     },     
+	    grid: {
+	  		   x:0,
+	  		   y:50,
+	  		   x2:50,
+	  		   y2:100,
+	        left: '3%',
+	        right: '4%',
+	        bottom: '3%',
+	        containLabel: true
+	    },
+	    xAxis:  [{
+	        type: 'value',
+            axisLabel:{
+                textStyle:{
+                    color: '#fff'
+                }
+              }
+	    }],
+	    yAxis: [{
+	        type: 'category',
+	        data: ['今天'],
+            axisLabel:{
+            textStyle:{
+                color: '#fff'
+            }
+          }
+	    }],
+	    series: [
+	        {
+	            name: '直接访问',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [320]
+	        },
+	        {
+	            name: '威胁暴露',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [120]
+	        },
+	        {
+	            name: '漏洞利用',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [220]
+	        },
+	        {
+	            name: '已被监视',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [150]
+	        },
+	        {
+	            name: '被动连接',
+	            type: 'bar',
+	            stack: '总量',
+	            label: {
+	                normal: {
+	                    show: true,
+	                    position: 'insideRight'
+	                }
+	            },
+	            data: [820]
+	        }
+	    ]
+	};
+	 
+	 var top2Chart = echarts.init(document.getElementById('top_1'));
+	 top2Chart.setOption(option9);
+	 
+	 
+	 var option10 = {
+   	//图表的标题
+       backgroundColor: '#08263a',
+       color:[ 
+           '#ffff66', '#ff6600', '#99ff66', '#6495ed', '#ff69b4', 
+           '#32cd32', '#ba55d3', '#cd5c5c', '#ffa500', '#40e0d0', 
+           '#1e90ff', '#ff6347', '#7b68ee', '#00fa9a', '#ffd700', 
+           '#6b8e23', '#ff00ff', '#3cb371', '#b8860b', '#30e0e0' 
+       ],
+       //图表展示的类别，这里的data和series中得name对应
+       grid:{
+  		   x:50,
+  		   y:100,
+  		   x2:50,
+  		   y2:100,
+           borderColor:'rgba(176,196,222,0.5)'//边框颜色
+       },
+       //这里的是采用什么方式触发数据，这里显示的竖轴，跟随鼠标移动到节点上会显示内容
+       tooltip: {
+           trigger: 'axis'
+       },
+	     title : {
+		        text: '测试数据',
+		        subtext: '',
+		        x:'left',
+		           textStyle:{
+		               fontSize: 16,
+		               color: '#fff'
+		           } 
+		     },
+		        legend: {
+		            data: ['DNS', '建联', 'SSL握手时间','首包','剩余时间','平均响应时间'],
+		            y: "top",
+		            x: "right",
+		            show:true,
+		            orient:'horizontal',
+		            textStyle:{
+		                color: '#fff'
+		            } 
+
+		        },
+       //代表x轴，这里type类型代表字符
+       xAxis: [{
+           type: 'category',
+           boundaryGap: false,//这里表示是否补齐空白
+           data: ['1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00'],
+
+           splitLine:{
+       　　　 //show:false
+           lineStyle:{
+             color: 'rgba(176,196,222,0.5)',
+             width: 1,
+             type: 'solid'
+           }
+       　　                      },
+          axisLabel:{
+           textStyle:{
+               color: '#fff'
+           }
+         }
+       }],
+       //代表y轴，这里type类型代表num类型
+       yAxis: [{
+           type: 'value',
+           data: [0,2,4,6,8,10],
+           splitLine:{
+       　　　　//show:false
+            lineStyle:{
+                color: 'rgba(176,196,222,0.5)',
+                width: 1,
+                type: 'solid'
+             }  
+           
+       　            },
+          axisLabel:{
+           textStyle:{
+               color: '#fff'
+           }
+           
+         }
+       }],
+
+       //图表类型，type表示按照什么类型图表显示，line代表折线，下面的内容与
+       //legend一一对应
+       series: [{
+           name: 'DNS',
+           type: 'line',
+           symbol: 'none',
+           //smooth: true,
+           itemStyle: {
+               normal: {
+                   areaStyle: {
+                       color:'#000',
+                       shadowColor: '#000',
+                       shadowBlur: 10,
+                       opacity:1
+                   }
+               }
+           },
+           data: [15, 19, 25, 20, 19, 29, 30]
+       }, {
+           name: '建联',
+           type: 'line',
+           symbol: 'none',
+           //smooth: true,
+           itemStyle: {
+               normal: {
+                   areaStyle: {
+                       color:'#ffff66',
+                       shadowColor: '#ffff66',
+                       shadowBlur: 10,
+                       opacity:1
+                   }
+               }
+           },
+           data: [119, 23, 39,219,  23, 33, 36]
+          
+       }, {
+           name: 'SSL握手时间',
+           type: 'line',
+           symbol: 'none',
+           //smooth: true,
+           itemStyle: {
+               normal: {
+                   areaStyle: {
+                       color:'#ff6600',
+                       shadowColor: '#ff6600',
+                       shadowBlur: 10,
+                       opacity:1
+                   }
+               }
+           },
+           data:[249, 322, 445, 39,44, 37,  442]
+      
+       }, {
+           name: '首包',
+           type: 'line',
+           symbol: 'none',
+           //smooth: true,
+           itemStyle: {
+               normal: {
+                  areaStyle: {
+                       color:'#7b68ee',
+                       shadowColor: '#7b68ee',
+                       shadowBlur: 10,
+                       opacity:1
+                   }
+               }
+           },
+           data: [700, 449, 46, 850,565, 614,  62]
+     
+       }, {
+           name: '剩余时间',
+           type: 'line',
+           symbol: 'none',
+           //smooth: true,
+           itemStyle: {
+               normal: {
+                   areaStyle: {
+                       color:'#cd5c5c',
+                       shadowColor: '#cd5c5c',
+                       shadowBlur: 10,
+                       opacity:1
+                   }
+               }
+           },
+           data: [449, 50, 85,450, 45, 916,  422]
+
+       }, {
+           name: '平均响应时间',
+           type: 'line',
+           symbol: 'none',
+           //smooth: true,
+           itemStyle: {
+               normal: {
+                   areaStyle: {
+                       color:'#ffd700',
+                       shadowColor: '#ffd700',
+                       shadowBlur: 10,
+                       opacity:1
+                   }
+               }
+           },
+           data: [1200, 80, 150, 100, 30, 120,820]
+       }]
+   };
+	 var top3Chart = echarts.init(document.getElementById('top_3'));
+	 top3Chart.setOption(option10);
+</script>
+</html>
