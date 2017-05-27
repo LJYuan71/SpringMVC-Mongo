@@ -20,11 +20,10 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
-import tk.ljyuan71.mongo.ResponseWithPage;
 import tk.ljyuan71.mongo.user.dao.UserDao;
 import tk.ljyuan71.mongo.user.model.User;
+import tk.ljyuan71.utils.ResponseWithPage;
 
 
 @Repository
@@ -212,8 +211,8 @@ public class UserDaoImpl implements UserDao{
 		DBObject queryObject = new BasicDBObject();//查询条件
 		DBObject projection = new BasicDBObject();//返回字段
 		projection.put("_id", 0);  //0不返回，1返回，没有显示设置0的都返回
-		projection.put("cname",1);  
-		projection.put("onumber",1); 
+		//projection.put("cname",1);  
+		//projection.put("onumber",1); 
 		DBCursor dbCursor = mongoTemplate.getCollection(collectionName).find(queryObject,projection);
 		//排序  
         DBObject sortDBObject=new BasicDBObject();  

@@ -5,6 +5,9 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * java类转换为mongodb的文档,它有以下几种注释：
  * 1.@Id - 文档的唯一标识，在mongodb中为ObjectId，它是唯一的，通过时间戳+机器标识+进程ID+自增计数器（确保同一秒内产生的Id不会冲突）构成。
@@ -16,6 +19,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author LJY
  *
  */
+@JsonInclude(Include.NON_NULL)//jackjson 2.x
+//@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)//jackjson 1.x
 @Document(collection = "user")
 public class User implements Serializable {
 	private static final long serialVersionUID = 7134892021464822105L;

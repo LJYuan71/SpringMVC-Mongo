@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import tk.ljyuan71.mongo.user.model.User;
+import tk.ljyuan71.utils.ResponseWithPage;
 
 public interface UserService {
 	/**
@@ -36,14 +37,14 @@ public interface UserService {
      * @param collName
      * @return
      */
-    public List<User> find(Map<String,Object> params, String collName);
+    public ResponseWithPage find(Map<String,Object> params, String collName) throws Exception;
     /**
      * 根据条件查询
      * @param params
      * @param collName
      * @return
      */
-    public List<User> find(Map<String,Object> params);
+    public ResponseWithPage find(Map<String,Object> params) throws Exception;
     /**
      * 根据指定集合名称查找所有  
      * @param params

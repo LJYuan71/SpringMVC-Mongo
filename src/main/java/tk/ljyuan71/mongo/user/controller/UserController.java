@@ -11,17 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.mongodb.morphia.Morphia;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import tk.ljyuan71.mongo.Respond;
-import tk.ljyuan71.mongo.ResponseWithPage;
 import tk.ljyuan71.mongo.user.model.User;
 import tk.ljyuan71.mongo.user.service.UserService;
+import tk.ljyuan71.utils.QueryFilter;
+import tk.ljyuan71.utils.Respond;
+import tk.ljyuan71.utils.ResponseWithPage;
 
 @Controller
 @RequestMapping("/user")
@@ -29,7 +28,8 @@ public class UserController {
 	private static Logger log = Logger.getLogger(UserController.class);
 	@Resource
 	private UserService userService;
-	
+	@Resource  
+    private MongoTemplate mongoTemplate; 
 	/**
 	 * 说明：
     	（1）save ：我们在新增文档时，如果有一个相同_ID的文档时，会覆盖原来的。
@@ -140,21 +140,25 @@ public class UserController {
 			//userService.insert(user);//向默认集合（实体名小写user）中添加数据，没有则创建后添加
 		} catch (Exception e) {
 			log.error("插入用户信息出错",e);
-			respond.setStatus(200);
+			respond.setStatus(202);
 			respond.setCause(e.getMessage());
 		}
-		//CriteriaDefinition criteriaDefinition = new CriteriaDefinition;
-		Query query = new Query(Criteria.where("account").is("LJYuan71"));
-		respond.setStatus(202);
+		respond.setStatus(200);
 		respond.setCause("插入"+user.getAccount()+"用户成功!");
 		return respond;
 	}
 	
-	
+	/**
+	 * 查询所有数据
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/findAll", produces="application/json;charset=UTF-8")
 	@ResponseBody
-	public ResponseWithPage findAll(HttpServletRequest request,HttpServletResponse response) throws Exception{
-		ResponseWithPage respond = new ResponseWithPage();
+	public Respond findAll(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Respond respond = new Respond();
 		List<User> userList = new ArrayList<>();
 		try {
 			//userList = userService.findAll("LJY");//带参数的表示根据指定集合查询，查询返回第一条符合记录
@@ -170,18 +174,37 @@ public class UserController {
 		return respond;
 	}
 	
+	/**
+	 * 根据添加查询用户
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/find", produces="application/json;charset=UTF-8")
 	@ResponseBody
 	public Object find(HttpServletRequest request,HttpServletResponse response) throws Exception{
-		Map<String,Object> map = new HashMap<>();
-		return userService.find(map,"LJY");
+		QueryFilter queryFilter=new QueryFilter(request, true);//从request中拿到参数,并且指定是否分页
+		Map<String,Object> queryMap = queryFilter.getFilters();//参数key-value
+		ResponseWithPage responseWithPage = new ResponseWithPage();
+		try {
+			responseWithPage = userService.find(queryMap,"LJY");
+		} catch (Exception e) {
+			responseWithPage.setStatus(202);
+			responseWithPage.setCause(e.getMessage());
+			responseWithPage.setMessage("查询用户失败!");
+		}
+		responseWithPage.setStatus(200);
+		responseWithPage.setMessage("查询用户成功!");
+		return responseWithPage;
 	}
 	
 	@RequestMapping(value="/findOne", produces="application/json;charset=UTF-8")
 	@ResponseBody
 	public Respond findOne(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		Respond respond = new Respond();
-		Map<String,Object> queryMap = new HashMap<>();
+		QueryFilter queryFilter=new QueryFilter(request, false);//从request中拿到参数,并且指定是否分页
+		Map<String,Object> queryMap = queryFilter.getFilters();//参数key-value
 		List<User> userList = new ArrayList<>();
 		queryMap.put("account", "LJYuan71");
 		try {
@@ -211,21 +234,43 @@ public class UserController {
 			userList.add(user);
 		} catch (Exception e) {
 			log.error("根据id查询用户信息出错",e);
-			respond.setStatus(200);
+			respond.setStatus(202);
 			respond.setCause(e.getMessage());
 		}
-		respond.setStatus(202);
+		respond.setStatus(200);
 		respond.setCause("根据id查询用户成功!");
 		respond.setData(userList);
 		return respond;
 	}
 	
-	public ResponseWithPage getAllUser(HttpServletRequest request,HttpServletResponse response) throws Exception{
-		Morphia  morphia = new Morphia();
-		morphia.map(User.class);
-		
-		ResponseWithPage responseWithPage = new ResponseWithPage();
-		
-		return responseWithPage;
+	@RequestMapping(value="/saveAllUser", produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public Respond saveAllUser(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Respond respond = new Respond();
+		List<User> users = new ArrayList<User>();
+		try {
+			for(int i = 70; i<100 ; i++){
+				User user = new User();
+				//user.setId("1234567890");//如果没有主动设置，则会默认使用数据库自带id(有索引)
+				user.setAccount("xin"+i);
+				user.setAddress("北京市 丰台区南四环");
+				user.setAge((int)(Math.random()*100)+1);
+				user.setGender((int)(Math.random()*3));
+				user.setName("新用户"+i);
+				user.setPassword("123456");
+				user.setCreatedate(new Date());
+				users.add(user);
+			}
+			mongoTemplate.insert(users,"LJY");//向LJY集合中添加数据
+			//userService.insert(user);//向默认集合（实体名小写user）中添加数据，没有则创建后添加
+		} catch (Exception e) {
+			log.error("插入用户信息出错",e);
+			respond.setStatus(202);
+			respond.setCause(e.getMessage());
+		}
+		respond.setStatus(200);
+		respond.setCause("批量插入用户成功!");
+		return respond;
 	}
+	
 }
