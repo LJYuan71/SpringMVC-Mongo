@@ -277,8 +277,8 @@ public class UserServiceImpl implements UserService{
 		basicDBList.add(new BasicDBObject("age",17));
 		basicDBList.add(new BasicDBObject("gender",1));
 		DBObject obj3 = new BasicDBObject();
-		//查询条件 age=17 and gender=1
-		obj3.put("$and", basicDBList);
+		//查询条件 age=17 or gender=1
+		obj3.put("$or", basicDBList);
 		Query query3 = new BasicQuery(obj3,fieldsObject);
 		
 		//二、3.QueryBuilder与BasicDBObject  BasicQuery(DBObject queryObject)
@@ -287,7 +287,10 @@ public class UserServiceImpl implements UserService{
 		//queryBuilder.and(new BasicDBObject("password","123456"),new BasicDBObject("address","北京市 丰台区南四环"))
 		//.or(new BasicDBObject("account", "xin"));
 		queryBuilder.put("age");
-		queryBuilder.lessThan(new BasicDBObject("age",20));
+		queryBuilder.lessThan(20);//age<20
+		queryBuilder.put("gender");
+		queryBuilder.greaterThanEquals(2);//gender>=2
+		queryBuilder.and(new BasicDBObject("password","123456")); //age<20 and password = 123456
 		DBObject obj4 = queryBuilder.get();
 		Query query4 = new BasicQuery(obj4,fieldsObject);
 		List<User> users = new ArrayList<User>();
